@@ -1,10 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"log"
 	"net"
+	"os"
 )
 
 func main() {
@@ -49,5 +51,6 @@ func handleConnection(conn net.Conn) {
 		}
 
 		fmt.Println(string(buffer[:n]))
+		os.WriteFile("newfile", bytes.Trim(buffer[:n], "\x00"), 0644)
 	}
 }
