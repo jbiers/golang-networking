@@ -3,13 +3,35 @@ package main
 import (
 	"fmt"
 	"net"
+	"net/url"
 	"os"
+	"strings"
 )
 
-func PrintIps(h string) {
-	fmt.Println("Searching IP addresses for:", h)
+func IsUrlValid(u string) bool {
 
-	ips, err := net.LookupIP(h)
+	if !strings.Contains(u, "http://") && !strings.Contains(u, "https://") {
+		u = "https://" + u
+	}
+
+	_, err := url.ParseRequestURI(u)
+
+	if err != nil {
+		return false
+	}
+
+	return true
+}
+
+func PrintIps(u string) {
+	fmt.Println("Searching IP addresses for:", u)
+
+	if !IsUrlValid(u) {
+		fmt.Println("URL is not valid.")
+		return
+	}
+
+	ips, err := net.LookupIP(u)
 
 	if err != nil {
 		fmt.Println(err)
