@@ -33,12 +33,11 @@ func main() {
 
 	addr := "127.0.0.1:8080"
 	conn, err := net.Dial("tcp", addr)
+	defer conn.Close()
 
 	if err != nil {
 		log.Fatal("Error connecting:", err.Error())
 	}
-
-	defer conn.Close()
 
 	fmt.Println("Connecting to TCP server in", addr)
 
@@ -48,5 +47,3 @@ func main() {
 		log.Fatal("Error sending message:", err.Error())
 	}
 }
-
-// at this point, it's tricky to understand how client and server buffer sizes interact
