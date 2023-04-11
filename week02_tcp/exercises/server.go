@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net"
 )
@@ -35,12 +36,18 @@ func handleConnection(conn net.Conn) {
 	defer conn.Close()
 	buffer := make([]byte, 1024)
 
-	n, err := conn.Read(buffer)
+	for {
+		n, err := conn.Read(buffer)
 
-	if err != nil {
-		log.Println("Error handling connection from:", conn.RemoteAddr())
-		return
+		if err != nil && err != io.EOF {
+			log.Println("Error handling connection from:", conn.RemoteAddr())
+			return
+		}
+
+		if err == io.EOF {
+			return
+		}
+
+		fmt.Println(string(buffer[:n]))
 	}
-
-	fmt.Println(string(buffer[:n]))
 }
